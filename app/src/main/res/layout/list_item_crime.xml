@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="false"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:focusable="false"
+        android:padding="4dp"
+        android:id="@+id/crime_list_item_solvedCheckBox" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Crime Title"
+        android:id="@+id/crime_list_item_titleTextView"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentStart="false"
+        android:gravity="center"
+        android:layout_toStartOf="@id/crime_list_item_solvedCheckBox"
+        android:paddingEnd="4dp"
+        android:paddingStart="4dp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Date Text"
+        android:id="@+id/crime_list_item_dateTextView"
+        android:layout_alignBottom="@+id/crime_list_item_solvedCheckBox"
+        android:layout_alignParentStart="false"
+        android:layout_alignEnd="@id/crime_list_item_titleTextView"
+        android:gravity="center"
+        android:paddingLeft="4dp"
+        android:paddingTop="4dp"
+        android:paddingRight="4dp"
+        android:layout_toStartOf="@id/crime_list_item_solvedCheckBox" />
+
+</RelativeLayout>
