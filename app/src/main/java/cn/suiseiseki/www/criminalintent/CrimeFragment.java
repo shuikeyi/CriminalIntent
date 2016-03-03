@@ -1,13 +1,16 @@
 package cn.suiseiseki.www.criminalintent;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -15,8 +18,10 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.text.format.DateFormat;
+import android.widget.ImageButton;
 
 import java.io.Serializable;
+import java.lang.annotation.Target;
 import java.util.Date;
 import java.util.UUID;
 
@@ -28,6 +33,8 @@ public class CrimeFragment extends Fragment {
     private EditText mTitleField;
     private Button mDateButton;
     private CheckBox mSolvedCheckBox;
+    private ImageButton mPhotoButton;
+
     public static final String EXTRA_CRIME_ID = "cn.suiseiseki.www.criminalintent.crime_id";
     private static final String DIALOG_DATE = "date";
     private static final int REQUEST_DATE = 0;
@@ -37,6 +44,19 @@ public class CrimeFragment extends Fragment {
         super.onCreate(savedInstanceState);
         UUID uuid = (UUID)getArguments().getSerializable(EXTRA_CRIME_ID);
         mCrime = CrimeLab.get(getActivity()).getCrime(uuid);
+        setHasOptionsMenu(true);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+           switch(item.getItemId()){
+               case android.R.id.home:
+                   if(NavUtils.getParentActivityName(getActivity())!=null){
+                       NavUtils.navigateUpFromSameTask(getActivity());
+                   }
+                   return true;
+               default: return super.onOptionsItemSelected(item);
+           }
     }
     public static CrimeFragment newInstance(UUID crimeID)
     {
@@ -79,8 +99,17 @@ public class CrimeFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fm = getActivity().getFragmentManager();
                 DatePickeFragment dialog = DatePickeFragment.newInstance(mCrime.getmDate());
-                dialog.setTargetFragment(CrimeFragment.this,REQUEST_DATE);
-                dialog.show(fm,DIALOG_DATE);
+                dialog.setTargetFragment(CrimeFragment.this, REQUEST_DATE);
+                dialog.show(fm, DIALOG_DATE);
+            }
+        });
+           getActivity().getActionBar().setDisplayHomeAsUpEnabled(true);
+        mPhotoButton = (ImageButton)v.findViewById(R.id.crime_camaraButton);
+        mPhotoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent(getActivity(),CrimeCameraActivity.class);
+                startActivity(i);
             }
         });
         mTitleField.setText(mCrime.getmTitle());
@@ -110,6 +139,13 @@ public class CrimeFragment extends Fragment {
             }
         });
         return v ;
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        CrimeLab.get(getActivity()).saveCrimes();
     }
 
 }
