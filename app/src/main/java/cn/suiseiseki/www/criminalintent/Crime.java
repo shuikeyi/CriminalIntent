@@ -1,5 +1,7 @@
 package cn.suiseiseki.www.criminalintent;
 
+import android.provider.ContactsContract;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -14,10 +16,42 @@ public class Crime {
     private String mTitle;
     private boolean mSolved;
     private Date mDate;
+
+    public String getmNumber() {
+        return mNumber;
+    }
+
+    public void setmNumber(String mNumber) {
+        this.mNumber = mNumber;
+    }
+
+    private String mNumber;
+
+    public String getmSuspect() {
+        return mSuspect;
+    }
+
+    public void setmSuspect(String mSuspect) {
+        this.mSuspect = mSuspect;
+    }
+
+    private String mSuspect;
     private static final String JSON_ID = "id";
     private static final String JSON_TITLE = "title";
     private static final String JSON_SOLVED = "solved";
     private static final String JSON_DATE = "date";
+    private static final String JSON_PHOTO = "Photo";
+    private static final String JSON_SUSPECT = "Suspect";
+    private static final String JSON_NUMBER = "Number";
+    public Photo getmPhoto() {
+        return mPhoto;
+    }
+
+    public void setmPhoto(Photo mPhoto) {
+        this.mPhoto = mPhoto;
+    }
+
+    private Photo mPhoto;
 
 
     public Date getmDate() {
@@ -67,6 +101,12 @@ public class Crime {
         json.put(JSON_TITLE,mTitle);
         json.put(JSON_SOLVED,mSolved);
         json.put(JSON_DATE,mDate.getTime());
+        if(mSuspect!=null)
+            json.put(JSON_SUSPECT,mSuspect);
+        if(mPhoto!=null)
+            json.put(JSON_PHOTO,getmPhoto().toJSON());
+        if(JSON_NUMBER!=null)
+            json.put(JSON_NUMBER,getmNumber());
         return json;
     }
 
@@ -78,6 +118,18 @@ public class Crime {
         }
         mSolved = json.getBoolean(JSON_SOLVED);
         mDate = new Date(json.getLong(JSON_DATE));
+        if(json.has(JSON_PHOTO))
+        {
+            mPhoto = new Photo(json.getJSONObject(JSON_PHOTO));
+        }
+        if(json.has(JSON_SUSPECT))
+        {
+            mSuspect = json.getString(JSON_SUSPECT);
+        }
+        if(json.has(JSON_NUMBER))
+        {
+            mNumber = json.getString(JSON_NUMBER);
+        }
     }
 
     @Override

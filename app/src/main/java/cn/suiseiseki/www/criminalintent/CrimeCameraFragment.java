@@ -1,7 +1,9 @@
 package cn.suiseiseki.www.criminalintent;
 
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,6 +33,7 @@ public class CrimeCameraFragment extends Fragment {
             mProgressContainer.setVisibility(View.VISIBLE);
         }
     };
+    public static final String EXTRA_PHOTO_FILENAME = "cn.suiseiseki.www.crimeIntent.Camera";
 
     private Camera.PictureCallback mJpegCallback = new Camera.PictureCallback(){
         public void onPictureTaken(byte[] data,Camera camera)
@@ -60,7 +63,14 @@ public class CrimeCameraFragment extends Fragment {
                 }
             }
             if(success)
+            {
                 Log.d(TAG,"JPEG saved at "+filename);
+                Intent i = new Intent();
+                i.putExtra(EXTRA_PHOTO_FILENAME,filename);
+                getActivity().setResult(Activity.RESULT_OK,i);
+            }
+            else
+            getActivity().setResult(Activity.RESULT_CANCELED);
             getActivity().finish();
         }
 
