@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -55,6 +56,22 @@ public class CrimeFragment extends Fragment {
     private static final int REQUEST_NUMBER = 99;
     private Button mSuspectButton;
     private final static String DIALOG_IMAGE = "image";
+    private Callbacks mCallbacks;
+    public interface Callbacks{
+        void onCrimeUpdated(Crime crime);
+    }
+    @Override
+    public void onAttach(Activity context)
+    {
+        super.onAttach(context);
+        mCallbacks = (Callbacks)context;
+    }
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mCallbacks = null;
+    }
     private void showPhoto()
     {
         Photo p = mCrime.getmPhoto();
@@ -137,6 +154,7 @@ public class CrimeFragment extends Fragment {
         {
             Date date = (Date)data.getSerializableExtra(DatePickeFragment.EXTRA_DATE);
             mCrime.setmDate(date);
+            mCallbacks.onCrimeUpdated(mCrime);
             updateDate();
         }
         else if(requestCode == REQUEST_PHOTO)
@@ -146,6 +164,7 @@ public class CrimeFragment extends Fragment {
                 Log.d(TAG, "photofile received");
             Photo p = new Photo(filename);
             mCrime.setmPhoto(p);
+            mCallbacks.onCrimeUpdated(mCrime);
             showPhoto();
         }
         else if(requestCode == REQUEST_CONTACT)
@@ -160,6 +179,7 @@ public class CrimeFragment extends Fragment {
             c.moveToFirst();
             String suspect = c.getString(0);
             mCrime.setmSuspect(suspect);
+            mCallbacks.onCrimeUpdated(mCrime);
             mSuspectButton.setText(suspect);
             c.close();
 //            Uri[] myUri = {ContactsContract.CommonDataKinds.Phone.CONTENT_URI};
@@ -236,6 +256,7 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 mCrime.setmSolved(isChecked);
+                mCallbacks.onCrimeUpdated(mCrime);
             }
         });
         Button callSuspectButton = (Button)v.findViewById(R.id.crime_call_suspect);
@@ -268,6 +289,8 @@ public class CrimeFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 mCrime.setmTitle(s.toString());
+                mCallbacks.onCrimeUpdated(mCrime);
+                getActivity().setTitle(mCrime.getmTitle());
 
             }
 

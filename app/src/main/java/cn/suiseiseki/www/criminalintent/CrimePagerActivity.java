@@ -15,11 +15,16 @@ import addon.FragmentStatePagerAdapter;
 /**
  * Created by Administrator on 2016/2/27.
  */
-public class CrimePagerActivity extends Activity {
+public class CrimePagerActivity extends Activity implements CrimeFragment.Callbacks{
 
 
     private ViewPager mViewPager;
     private ArrayList<Crime> mCrimes;
+
+    public void onCrimeUpdated(Crime crime)
+    {
+
+    }
 
 
 

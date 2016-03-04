@@ -1,6 +1,8 @@
 package cn.suiseiseki.www.criminalintent;
 
+import android.app.Activity;
 import android.app.ListFragment;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +25,8 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import javax.security.auth.callback.Callback;
+
 /**
  * Created by Administrator on 2016/2/26.
  */
@@ -31,6 +35,26 @@ public class CrimeListFragment extends ListFragment
     private ArrayList<Crime> mCrimes;
     private final static String TAG = "CrimeListFragment";
     private boolean mSubtitleVisible;
+    private Callbacks mCallbacks;
+    public interface Callbacks {
+        void onCrimeSelected(Crime crime);
+    }
+    @Override
+    public void onAttach(Activity context)
+    {
+        super.onAttach(context);
+        mCallbacks = (Callbacks)context;
+    }
+    public void updateUI()
+    {
+        ((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
+    }
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mCallbacks = null;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -125,9 +149,11 @@ public class CrimeListFragment extends ListFragment
             case R.id.menu_item_new_crime:
                 Crime crime = new Crime();
                 CrimeLab.get(getActivity()).addCrime(crime);
-                Intent i = new Intent(getActivity(),CrimePagerActivity.class);
-                i.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getmId());
-                startActivityForResult(i,0);
+//                Intent i = new Intent(getActivity(),CrimePagerActivity.class);
+//                i.putExtra(CrimeFragment.EXTRA_CRIME_ID, crime.getmId());
+//                startActivityForResult(i,0);
+                ((CrimeAdapter)getListAdapter()).notifyDataSetChanged();
+                mCallbacks.onCrimeSelected(crime);
                 return true;
             case R.id.menu_item_show_subtitle:
                 if(getActivity().getActionBar().getSubtitle() == null){
@@ -146,9 +172,10 @@ public class CrimeListFragment extends ListFragment
     public void onListItemClick(ListView l,View v,int position,long id)
     {
         Crime c = ((CrimeAdapter)getListAdapter()).getItem(position);
-        Intent intent = new Intent(getActivity(),CrimePagerActivity.class);
-        intent.putExtra(CrimeFragment.EXTRA_CRIME_ID,c.getmId());
-        startActivity(intent);
+//        Intent intent = new Intent(getActivity(),CrimePagerActivity.class);
+//        intent.putExtra(CrimeFragment.EXTRA_CRIME_ID,c.getmId());
+//        startActivity(intent);
+        mCallbacks.onCrimeSelected(c);
     }
     @Override
     public void onResume()
