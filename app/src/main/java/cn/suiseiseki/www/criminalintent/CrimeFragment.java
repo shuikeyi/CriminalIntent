@@ -4,14 +4,17 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.support.v4.app.NavUtils;
 import android.text.Editable;
@@ -31,6 +34,7 @@ import android.widget.ImageView;
 
 import java.io.Serializable;
 import java.lang.annotation.Target;
+import java.security.acl.LastOwnerException;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -57,9 +61,22 @@ public class CrimeFragment extends Fragment {
     private Button mSuspectButton;
     private final static String DIALOG_IMAGE = "image";
     private Callbacks mCallbacks;
+    MyService.MyBinder binder;
     public interface Callbacks{
         void onCrimeUpdated(Crime crime);
     }
+    private ServiceConnection myConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            binder = (MyService.MyBinder)service;
+            Log.i("Music","Music Service Connected:"+binder.message);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            Log.i("Music","Music Service Disconnected");
+        }
+    };
     @Override
     public void onAttach(Activity context)
     {
@@ -196,6 +213,7 @@ public class CrimeFragment extends Fragment {
 
     }
 
+
     @Override
     public View onCreateView(LayoutInflater inflater,ViewGroup parent,Bundle savedInstanceState)
     {
@@ -230,6 +248,26 @@ public class CrimeFragment extends Fragment {
                 startActivity(i);
             }
         });
+        // add service
+        Button startServiceButton =(Button) v.findViewById(R.id.fragment_service_start_button);
+        Button stopServiceButton = (Button) v.findViewById(R.id.fragment_service_stop_button);
+        startServiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent();
+                i.setClass(getActivity(),MyService.class);
+                getActivity().bindService(i,myConnection,Context.BIND_AUTO_CREATE);
+            }
+        });
+        stopServiceButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent i = new Intent();
+                i.setClass(getActivity(),MyService.class);
+                getActivity().unbindService(myConnection);
+            }
+        });
+
         mSuspectButton = (Button)v.findViewById(R.id.crime_suspect_button);
         mSuspectButton.setOnClickListener(new View.OnClickListener() {
             @Override

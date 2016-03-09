@@ -99,6 +99,19 @@
         android:layout_marginStart="80dp"
         android:text="@string/crime_call_suspect"
         android:id="@+id/crime_call_suspect"/>
-
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginEnd="100dp"
+        android:text="@string/service_start"
+        android:id="@+id/fragment_service_start_button"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="100dp"
+        android:layout_marginEnd="100dp"
+        android:text="@string/service_stop"
+        android:id="@+id/fragment_service_stop_button"/>
 </LinearLayout>
 </ScrollView>

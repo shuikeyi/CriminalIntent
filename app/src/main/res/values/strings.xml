@@ -25,4 +25,6 @@
     <string name="send_report">Send crime report via</string>
     <string name="crime_report_subject">CrimeIntent Crime Report</string>
     <string name="crime_call_suspect">Call Suspect!</string>
+    <string name="service_start">Start Service</string>
+    <string name="service_stop">Stop Service</string>
 </resources>
